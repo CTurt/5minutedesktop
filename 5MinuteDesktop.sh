@@ -130,23 +130,17 @@ if ( $status == 0 ) then
 	#create the current application rules for secadm
 	#based on rules from https://github.com/HardenedBSD/secadm-rules
 	cat << EOF >> /etc/secadm.rules
-{
-	"applications": [
-	{
+secadm {
+	pax {
 		path: "/usr/local/share/chromium/chrome",
-		features: { 
-	      	  mprotect: false,
-	      	  pageexec: false,
-		}
+		mprotect: false,
+	      	pageexec: false,
 	},
-	{
+	pax {
 		path: "/usr/local/lib/libreoffice/program/soffice.bin",
-		features: { 
-	      	  mprotect: false,
-	      	  pageexec: false,
-		}
-	},
-	]
+		mprotect: false,
+		pageexec: false,
+	}
 }
 EOF
 
@@ -156,7 +150,7 @@ EOF
 	#set secadm rules at bootime
 	cat << EOF >> /etc/rc.local
 #load secadm rules
-/usr/local/sbin/secadm -c /etc/secadm.rules set
+/usr/local/sbin/secadm load /etc/secadm.rules
 EOF
 chmod 500 /etc/rc.local
 fi
